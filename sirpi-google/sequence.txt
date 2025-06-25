@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as Backend
+    participant G as GitHub
+    participant A as Repository Agent
+
+    U->>F: Click "Connect Repository"
+    F->>G: Redirect to GitHub App Install
+    G->>U: Show app permissions & repo selection
+    U->>G: Approve installation
+    G->>B: Send installation webhook
+    B->>B: Store installation_id & user mapping
+    B->>F: Redirect user back to frontend
+    F->>U: Show connected repositories
+    U->>F: Select repo and click "Analyze"
+    F->>B: POST /api/repositories/{id}/analyze
+    B->>A: Start Repository Analysis Agent
+    A->>G: Read repository contents via GitHub API
+    A->>B: Return analysis results
+    B->>F: Return analysis + start multi-agent workflow
