@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   allowedDevOrigins: ["*"],
   experimental: {
-    turbo: false, // disables turbopack
+    turbo: false, // disables turbopack and reverts to webpack
   },
 };
 
