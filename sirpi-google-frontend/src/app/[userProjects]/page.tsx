@@ -9,6 +9,9 @@ import {
   SearchIcon,
   ChevronDownIcon,
   PlusIcon,
+  SparklesIcon,
+  CloudIcon,
+  RocketLaunchIcon,
 } from "@/components/ui/icons";
 import { githubApi, GitHubInstallation } from "@/lib/api/github";
 import {
@@ -43,7 +46,6 @@ export default function UserProjectsPage() {
     if (user && isClient) {
       const expectedNamespace = getUserProjectNamespace(user);
       if (userProjects !== expectedNamespace) {
-        // Redirect to correct namespace
         router.replace(`/${expectedNamespace}`);
         return;
       }
@@ -54,33 +56,26 @@ export default function UserProjectsPage() {
   useEffect(() => {
     if (!isClient) return;
 
-    // Check for GitHub auth errors
     const errorParam = searchParams.get("error");
     if (errorParam === "github_auth_failed") {
       setError("Failed to connect to GitHub. Please try again.");
-      // Remove the error parameter from URL
       window.history.replaceState({}, "", window.location.pathname);
     }
 
-    // Check for import success
     const importedParam = searchParams.get("imported");
     const createdParam = searchParams.get("created");
     const projectParam = searchParams.get("project");
     if (importedParam === "true") {
-      // Show success message (you can add a success state if needed)
       const projectName = projectParam
         ? decodeURIComponent(projectParam)
         : "Project";
       console.log(`${projectName} imported successfully!`);
-      // Remove the imported parameter from URL
       window.history.replaceState({}, "", window.location.pathname);
     } else if (createdParam === "true") {
-      // Show success message for project creation
       const projectName = projectParam
         ? decodeURIComponent(projectParam)
         : "Project";
       console.log(`${projectName} created successfully!`);
-      // Remove the created parameter from URL
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, [searchParams, isClient]);
@@ -164,9 +159,22 @@ export default function UserProjectsPage() {
         </div>
       )}
 
+      {/* Enhanced Header Section */}
+      <div className="text-center py-8">
+        <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-4">
+          <SparklesIcon className="w-4 h-4 mr-2" />
+          AI-Powered Infrastructure
+        </div>
+        <h1 className="text-4xl font-bold text-white mb-4">
+          Your Projects Dashboard
+        </h1>
+        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          Transform your repositories into production-ready infrastructure with AI-powered analysis and deployment automation.
+        </p>
+      </div>
+
       {/* Search Bar + Sort + Add New Row */}
       <div className="flex items-center gap-4 px-60">
-        {/* Search Bar - Wide and Centered */}
         <div className="flex-1 relative">
           <SearchIcon
             className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4"
@@ -177,7 +185,7 @@ export default function UserProjectsPage() {
             placeholder="Search repositories and projects..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-black rounded-lg text-white focus:outline-none transition-colors placeholder:text-[#A1A1A1]"
+            className="w-full pl-10 pr-4 py-3 bg-black rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-[#A1A1A1]"
             style={{
               border: "1px solid #3D3D3D",
               color: "#FFFFFF",
@@ -185,12 +193,11 @@ export default function UserProjectsPage() {
           />
         </div>
 
-        {/* Sort Dropdown */}
         <div className="relative">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="appearance-none bg-black rounded-lg px-3 py-2 pr-8 text-white text-sm focus:outline-none transition-colors cursor-pointer"
+            className="appearance-none bg-black rounded-lg px-3 py-3 pr-8 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all cursor-pointer"
             style={{
               border: "1px solid #3D3D3D",
             }}
@@ -206,18 +213,17 @@ export default function UserProjectsPage() {
           />
         </div>
 
-        {/* Add New Button */}
         <button
           onClick={() => router.push(`/${userProjects}/import`)}
-          className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-lg transition-all duration-300 transform hover:scale-105 cursor-pointer"
         >
           <PlusIcon className="w-4 h-4" />
-          Add New...
+          Add New Project
         </button>
       </div>
 
       {/* Projects Grid or Empty State */}
-      {true ? (
+      {hasProjects ? (
         <ProjectsGrid projects={sortedProjects} userNamespace={userProjects} />
       ) : (
         <EmptyState installation={githubInstallation} isLoading={isLoading} />
@@ -260,14 +266,18 @@ function ProjectCard({
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "completed":
-        return "#22c55e"; // green
+      case "deployed":
+        return "#22c55e";
       case "generating":
       case "pending":
-        return "#f59e0b"; // yellow
+      case "deploying":
+        return "#f59e0b";
       case "failed":
-        return "#ef4444"; // red
+        return "#ef4444";
+      case "ready_to_deploy":
+        return "#3b82f6";
       default:
-        return "#6b7280"; // gray
+        return "#6b7280";
     }
   };
 
@@ -275,12 +285,18 @@ function ProjectCard({
     switch (status.toLowerCase()) {
       case "completed":
         return "Ready";
+      case "deployed":
+        return "Deployed";
       case "generating":
         return "Building";
       case "pending":
         return "Pending";
+      case "deploying":
+        return "Deploying";
       case "failed":
         return "Failed";
+      case "ready_to_deploy":
+        return "Ready to Deploy";
       default:
         return status;
     }
@@ -307,30 +323,30 @@ function ProjectCard({
     if (project.slug) {
       router.push(`/${userNamespace}/${project.slug}`);
     } else {
-      // Fallback to old URL structure
       router.push(`/projects/${project.id}`);
     }
   };
 
   return (
     <div
-      className="bg-black rounded-lg p-6 hover:border-gray-600 transition-colors cursor-pointer"
+      className="bg-black rounded-xl p-6 hover:border-gray-600 transition-all duration-300 cursor-pointer group hover:shadow-xl hover:shadow-blue-500/10 hover:scale-105"
       style={{ border: "1px solid #3D3D3D" }}
       onClick={handleProjectClick}
     >
       {/* Project Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          {/* Framework Icon */}
-          <div className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
             {project.framework_info?.icon ? (
               <span className="text-lg">{project.framework_info.icon}</span>
             ) : (
-              <div className="w-4 h-4 bg-gray-600 rounded"></div>
+              <CloudIcon className="w-5 h-5 text-white" />
             )}
           </div>
           <div>
-            <h3 className="text-white font-medium text-sm">{project.name}</h3>
+            <h3 className="text-white font-semibold text-base group-hover:text-blue-400 transition-colors">
+              {project.name}
+            </h3>
             {project.repository_name && (
               <p className="text-xs text-gray-400">{project.repository_name}</p>
             )}
@@ -339,7 +355,7 @@ function ProjectCard({
 
         {/* Status Badge */}
         <div
-          className="px-2 py-1 rounded-full text-xs font-medium"
+          className="px-3 py-1 rounded-full text-xs font-medium"
           style={{
             backgroundColor: `${getStatusColor(project.status)}20`,
             color: getStatusColor(project.status),
@@ -350,22 +366,34 @@ function ProjectCard({
       </div>
 
       {/* Project Info */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         {project.framework_info && (
-          <p className="text-xs text-gray-400">
-            {project.framework_info.display_name}
-          </p>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+            <p className="text-xs text-gray-400">
+              {project.framework_info.display_name}
+            </p>
+          </div>
         )}
 
         {project.deployment_config?.url && (
-          <p className="text-xs text-blue-400 truncate">
-            {project.deployment_config.url as string}
-          </p>
+          <div className="flex items-center gap-2">
+            <RocketLaunchIcon className="w-3 h-3 text-green-400" />
+            <p className="text-xs text-blue-400 truncate">
+              {project.deployment_config.url as string}
+            </p>
+          </div>
         )}
 
-        <p className="text-xs text-gray-500">
-          Created {formatDate(project.created_at)}
-        </p>
+        <div className="flex items-center justify-between pt-2 border-t border-gray-800">
+          <p className="text-xs text-gray-500">
+            Created {formatDate(project.created_at)}
+          </p>
+          <div className="flex items-center gap-1">
+            <SparklesIcon className="w-3 h-3 text-purple-400" />
+            <span className="text-xs text-purple-400">AI Generated</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -379,84 +407,63 @@ function EmptyState({
   isLoading: boolean;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      {/* Cloud Icon */}
-      <div className="w-16 h-16 mb-6" style={{ color: "#A1A1A1" }}>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          className="w-full h-full"
-        >
-          <path d="M12 2L2 7l10 5 10-5-10-5z" />
-          <path d="M2 17l10 5 10-5" />
-          <path d="M2 12l10 5 10-5" />
-        </svg>
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      {/* Enhanced Empty State Icon */}
+      <div className="w-24 h-24 mb-8 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-2xl flex items-center justify-center">
+        <CloudIcon className="w-12 h-12 text-blue-400" />
       </div>
 
       {/* Title and Description */}
-      <h2 className="text-xl font-semibold text-white mb-2">
-        Deploy your first project
+      <h2 className="text-2xl font-bold text-white mb-4">
+        Deploy your first project with AI
       </h2>
-      <p className="mb-8 max-w-md" style={{ color: "#A1A1A1" }}>
-        Start with one of our templates or create something new.
+      <p className="mb-12 max-w-md text-gray-400 text-lg">
+        Connect your GitHub repository and let our AI analyze your codebase to generate production-ready infrastructure.
       </p>
 
-      {/* Import Project Card - Vercel Style */}
+      {/* Enhanced Import Project Card */}
       <div className="w-full max-w-md">
         <ImportProjectCard installation={installation} isLoading={isLoading} />
       </div>
 
-      {/* Browse Templates Section */}
-      <div className="mt-8 w-full max-w-md">
-        <div
-          className="bg-black rounded-lg p-4 hover:border-gray-600 transition-colors"
-          style={{ border: "1px solid #3D3D3D" }}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1">
-                <div className="w-6 h-6 bg-blue-500 rounded-sm flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">R</span>
-                </div>
-                <div className="w-6 h-6 bg-black rounded-sm flex items-center justify-center border border-gray-600">
-                  <span className="text-xs font-bold text-white">S</span>
-                </div>
-                <div className="w-6 h-6 bg-green-500 rounded-sm flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">V</span>
-                </div>
-              </div>
-              <div className="text-left">
-                <div className="text-sm font-medium text-white" lang="en">
-                  Browse Templates
-                </div>
-                <div className="text-xs" lang="en" style={{ color: "#A1A1A1" }}>
-                  Start with AI projects, ecommerce, and more
-                </div>
-              </div>
-            </div>
-            <button
-              style={{ color: "#A1A1A1" }}
-              className="hover:text-white transition-colors"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
+      {/* Features Grid */}
+      <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl">
+        <FeatureHighlight
+          icon={<SparklesIcon className="w-6 h-6" />}
+          title="AI Analysis"
+          description="Automatically detects frameworks and dependencies"
+        />
+        <FeatureHighlight
+          icon={<CloudIcon className="w-6 h-6" />}
+          title="Multi-Cloud"
+          description="Deploy to AWS, GCP, or Azure with one click"
+        />
+        <FeatureHighlight
+          icon={<RocketLaunchIcon className="w-6 h-6" />}
+          title="Production Ready"
+          description="Auto-scaling, monitoring, and security included"
+        />
       </div>
+    </div>
+  );
+}
+
+function FeatureHighlight({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="p-6 bg-gray-900/50 rounded-xl border border-gray-800">
+      <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-lg flex items-center justify-center mb-4 text-blue-400">
+        {icon}
+      </div>
+      <h3 className="text-white font-semibold mb-2">{title}</h3>
+      <p className="text-gray-400 text-sm">{description}</p>
     </div>
   );
 }
@@ -473,16 +480,15 @@ function ImportProjectCard({
   if (isLoading) {
     return (
       <div
-        className="bg-black rounded-lg p-4"
-        style={{ border: "1px solid #3D3D3D" }}
+        className="bg-black rounded-xl p-6 border border-gray-800"
       >
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gray-800 rounded-full animate-pulse"></div>
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-gray-800 rounded-xl animate-pulse"></div>
           <div className="flex-1">
             <div className="h-4 bg-gray-800 rounded animate-pulse mb-2"></div>
             <div className="h-3 bg-gray-800 rounded animate-pulse w-2/3"></div>
           </div>
-          <div className="w-16 h-8 bg-gray-800 rounded animate-pulse"></div>
+          <div className="w-20 h-10 bg-gray-800 rounded animate-pulse"></div>
         </div>
       </div>
     );
@@ -490,7 +496,6 @@ function ImportProjectCard({
 
   const handleImportClick = async () => {
     if (!installation) {
-      // Redirect to GitHub connection using the install URL
       try {
         const installUrl = githubApi.getInstallUrl();
         window.location.href = installUrl;
@@ -498,14 +503,13 @@ function ImportProjectCard({
         console.error("Error getting GitHub install URL:", error);
       }
     } else {
-      // Navigate to import page
       router.push("/projects/import");
     }
   };
 
   return (
     <div
-      className="bg-black rounded-lg p-4 transition-colors cursor-pointer"
+      className="bg-black rounded-xl p-6 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20"
       style={{
         border: installation ? "1px solid #22c55e" : "1px solid #3D3D3D",
         backgroundColor: installation ? "rgba(34, 197, 94, 0.05)" : "black",
@@ -513,42 +517,37 @@ function ImportProjectCard({
       onClick={handleImportClick}
     >
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center"
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
             style={{
               backgroundColor: installation
                 ? "rgba(34, 197, 94, 0.2)"
-                : "#374151",
+                : "rgba(59, 130, 246, 0.2)",
             }}
           >
             <GitHubIcon
-              className="w-4 h-4"
+              className="w-6 h-6"
               style={{
-                color: installation ? "#22c55e" : "#A1A1A1",
+                color: installation ? "#22c55e" : "#3b82f6",
               }}
             />
           </div>
           <div className="text-left">
-            <div className="text-sm font-medium text-white">
-              {installation ? "Select Repositories" : "Import Project"}
+            <div className="text-base font-semibold text-white">
+              {installation ? "Import Repository" : "Connect GitHub"}
             </div>
-            <div className="text-xs" style={{ color: "#A1A1A1" }}>
+            <div className="text-sm text-gray-400">
               {installation
                 ? "Choose repos to create projects from"
-                : "Add a repo from your git provider"}
+                : "Connect your GitHub account to get started"}
             </div>
           </div>
         </div>
         <button
-          className="px-4 py-2 text-sm font-medium rounded-md transition-colors"
-          style={{
-            border: installation ? "1px solid #22c55e" : "1px solid #FFFFFF",
-            backgroundColor: "transparent",
-            color: installation ? "#22c55e" : "#FFFFFF",
-          }}
+          className="px-6 py-2 text-sm font-medium rounded-lg transition-all duration-300 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
         >
-          {installation ? "Select" : "Import"}
+          {installation ? "Import" : "Connect"}
         </button>
       </div>
     </div>

@@ -337,3 +337,91 @@ export function RefreshIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function SparklesIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+      height="24"
+      width="24"
+      {...props}
+    >
+      <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+      <path d="M20 3v4" />
+      <path d="M22 5h-4" />
+      <path d="M4 17v2" />
+      <path d="M5 18H3" />
+    </svg>
+  );
+}
+
+export function CloudIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+      height="24"
+      width="24"
+      {...props}
+    >
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+    </svg>
+  );
+}
+
+export function RocketLaunchIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+      height="24"
+      width="24"
+      {...props}
+    >
+      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+      <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+    </svg>
+  );
+}
+
+export function CpuChipIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+      height="24"
+      width="24"
+      {...props}
+    >
+      <rect width="16" height="16" x="4" y="4" rx="2" />
+      <rect width="6" height="6" x="9" y="9" rx="1" />
+      <path d="M15 2v2" />
+      <path d="M15 20v2" />
+      <path d="M2 15h2" />
+      <path d="M2 9h2" />
+      <path d="M20 15h2" />
+      <path d="M20 9h2" />
+      <path d="M9 2v2" />
+      <path d="M9 20v2" />
+    </svg>
+  );
+}
