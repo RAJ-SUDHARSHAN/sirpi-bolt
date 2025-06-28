@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import { ArrowRightIcon, GitHubIcon, CloudIcon, CpuChipIcon, RocketLaunchIcon, CheckIcon, PlayIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, CloudIcon, CpuChipIcon, RocketLaunchIcon, CheckIcon, PlayIcon } from "@heroicons/react/24/outline";
+import { GitHubIcon } from "@/components/ui/icons";
 
 export default function Home() {
   return (

@@ -1,5 +1,3 @@
-import { auth } from "@clerk/nextjs/server";
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Declare Clerk global type
@@ -24,19 +22,10 @@ const getAuthHeaders = async () => {
     };
   }
 
-  // For server-side usage
-  try {
-    const { getToken } = await auth();
-    const token = await getToken();
-    return {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-    };
-  } catch {
-    return {
-      "Content-Type": "application/json",
-    };
-  }
+  // For server-side usage - only call auth() in server components
+  return {
+    "Content-Type": "application/json",
+  };
 };
 
 // Types for Google ADK Projects API responses

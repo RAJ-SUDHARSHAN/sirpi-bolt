@@ -24,19 +24,10 @@ const getAuthHeaders = async () => {
     };
   }
 
-  // For server-side usage
-  try {
-    const { getToken } = await auth();
-    const token = await getToken();
-    return {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-    };
-  } catch {
-    return {
-      "Content-Type": "application/json",
-    };
-  }
+  // For server-side usage - only call auth() in server components
+  return {
+    "Content-Type": "application/json",
+  };
 };
 
 // Types for GitHub API responses
