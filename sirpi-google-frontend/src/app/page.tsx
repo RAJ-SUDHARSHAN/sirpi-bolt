@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import { ArrowRightIcon, GitHubIcon, CloudIcon, CpuChipIcon, RocketLaunchIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, GitHubIcon, CloudIcon, CpuChipIcon, RocketLaunchIcon, CheckIcon, PlayIcon } from "@heroicons/react/24/outline";
 
 export default function Home() {
   return (
@@ -8,7 +8,7 @@ export default function Home() {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {/* Animated Background Pattern */}
-        <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 opacity-20">
           <div className="absolute inset-0" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}></div>
@@ -24,17 +24,34 @@ export default function Home() {
 
             {/* Main Heading */}
             <h1 className="text-5xl md:text-7xl font-bold mb-8 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight">
-              Transform Any Repo Into
+              From GitHub Repo to
               <br />
               <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Production Infrastructure
               </span>
+              <br />
+              <span className="text-3xl md:text-4xl text-gray-300">in Minutes</span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-xl md:text-2xl mb-12 text-gray-300 max-w-4xl mx-auto leading-relaxed">
-              Connect your GitHub repository, let AI analyze your codebase, and deploy production-ready infrastructure to AWS/GCP in minutes. Zero manual configuration required.
+              Connect your GitHub repository, let AI analyze your codebase, and deploy production-ready infrastructure to AWS/GCP automatically. Zero manual configuration required.
             </p>
+
+            {/* Demo Video Placeholder */}
+            <div className="max-w-4xl mx-auto mb-12">
+              <div className="relative aspect-video bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 hover:bg-blue-700 transition-colors cursor-pointer">
+                      <PlayIcon className="w-8 h-8 text-white ml-1" />
+                    </div>
+                    <p className="text-gray-300 text-lg font-medium">Watch 3-Minute Demo</p>
+                    <p className="text-gray-500 text-sm">See how Sirpi transforms any repo into production infrastructure</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* CTA Buttons */}
             <SignedOut>
@@ -50,10 +67,10 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg blur opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                 </Link>
                 <Link
-                  href="#demo"
+                  href="#how-it-works"
                   className="px-8 py-4 border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white rounded-lg font-semibold transition-all duration-300 hover:bg-gray-800/50 cursor-pointer inline-flex items-center justify-center"
                 >
-                  Watch Demo
+                  See How It Works
                 </Link>
               </div>
             </SignedOut>
@@ -93,10 +110,10 @@ export default function Home() {
       </div>
 
       {/* How It Works Section */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div id="how-it-works" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            How It Works
+            How Sirpi Works
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
             Four simple steps to transform your repository into production-ready infrastructure
@@ -135,40 +152,67 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Demo Section */}
-      <div id="demo" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      {/* Features Section */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            See Sirpi in Action
+            Why Choose Sirpi?
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Watch how Sirpi transforms a Next.js repository into production infrastructure in under 3 minutes
+            Built for developers who want to focus on code, not infrastructure complexity
           </p>
         </div>
 
-        <div className="relative max-w-4xl mx-auto">
-          <div className="aspect-video bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden shadow-2xl">
-            <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <p className="text-gray-300 text-lg font-medium">Demo Video</p>
-                <p className="text-gray-500 text-sm">Coming Soon</p>
-              </div>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <BenefitCard
+            title="Zero Configuration"
+            description="No YAML files, no complex setup. Just connect your repo and deploy."
+            icon="⚡"
+          />
+          <BenefitCard
+            title="Multi-Cloud Ready"
+            description="Deploy to AWS, GCP, or Azure with the same simple workflow."
+            icon="☁️"
+          />
+          <BenefitCard
+            title="Cost Optimized"
+            description="AI-powered resource sizing ensures you only pay for what you need."
+            icon="💰"
+          />
+          <BenefitCard
+            title="Production Grade"
+            description="Auto-scaling, monitoring, security, and backup included by default."
+            icon="🛡️"
+          />
+          <BenefitCard
+            title="Framework Agnostic"
+            description="Supports Next.js, React, Python, Node.js, Go, and more."
+            icon="🔧"
+          />
+          <BenefitCard
+            title="Real-time Monitoring"
+            description="Track deployments, costs, and performance in real-time."
+            icon="📊"
+          />
         </div>
       </div>
 
       {/* Stats Section */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
           <StatCard number="10x" label="Faster Deployment" />
           <StatCard number="99.9%" label="Uptime Guarantee" />
           <StatCard number="24/7" label="AI Monitoring" />
+          <StatCard number="$0" label="Setup Cost" />
+        </div>
+      </div>
+
+      {/* Built with Bolt.new Badge */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center">
+          <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-full">
+            <span className="text-yellow-400 font-medium">⚡ Built with Bolt.new</span>
+          </div>
         </div>
       </div>
 
@@ -229,6 +273,24 @@ function FeatureCard({
         <h3 className="text-xl font-bold text-white mb-4">{title}</h3>
         <p className="text-gray-400 leading-relaxed">{description}</p>
       </div>
+    </div>
+  );
+}
+
+function BenefitCard({
+  title,
+  description,
+  icon,
+}: {
+  title: string;
+  description: string;
+  icon: string;
+}) {
+  return (
+    <div className="p-6 bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:border-gray-700 rounded-xl transition-all duration-300 hover:transform hover:scale-105">
+      <div className="text-3xl mb-4">{icon}</div>
+      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-gray-400 leading-relaxed">{description}</p>
     </div>
   );
 }

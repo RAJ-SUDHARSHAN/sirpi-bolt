@@ -12,6 +12,10 @@ import {
   SparklesIcon,
   CloudIcon,
   RocketLaunchIcon,
+  CpuChipIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  PlayIcon,
 } from "@/components/ui/icons";
 import { githubApi, GitHubInstallation } from "@/lib/api/github";
 import {
@@ -163,7 +167,7 @@ export default function UserProjectsPage() {
       <div className="text-center py-8">
         <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-4">
           <SparklesIcon className="w-4 h-4 mr-2" />
-          AI-Powered Infrastructure
+          AI-Powered Infrastructure Automation
         </div>
         <h1 className="text-4xl font-bold text-white mb-4">
           Your Projects Dashboard
@@ -172,6 +176,42 @@ export default function UserProjectsPage() {
           Transform your repositories into production-ready infrastructure with AI-powered analysis and deployment automation.
         </p>
       </div>
+
+      {/* AI Workflow Overview */}
+      {hasProjects && (
+        <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-xl p-6 mb-8">
+          <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+            <CpuChipIcon className="w-6 h-6 text-blue-400" />
+            AI Workflow Status
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <WorkflowStat
+              icon={<GitHubIcon className="w-5 h-5" />}
+              label="Repositories Analyzed"
+              value={userOverview?.repositories.count || 0}
+              color="text-green-400"
+            />
+            <WorkflowStat
+              icon={<CpuChipIcon className="w-5 h-5" />}
+              label="AI Analysis Complete"
+              value={sortedProjects.filter(p => p.status !== "initializing").length}
+              color="text-blue-400"
+            />
+            <WorkflowStat
+              icon={<CloudIcon className="w-5 h-5" />}
+              label="Infrastructure Ready"
+              value={sortedProjects.filter(p => p.status === "ready_to_deploy").length}
+              color="text-purple-400"
+            />
+            <WorkflowStat
+              icon={<RocketLaunchIcon className="w-5 h-5" />}
+              label="Deployed Projects"
+              value={sortedProjects.filter(p => p.status === "deployed").length}
+              color="text-orange-400"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Search Bar + Sort + Add New Row */}
       <div className="flex items-center gap-4 px-60">
@@ -232,6 +272,28 @@ export default function UserProjectsPage() {
   );
 }
 
+function WorkflowStat({
+  icon,
+  label,
+  value,
+  color,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  color: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 p-4 bg-gray-900/50 rounded-lg border border-gray-800">
+      <div className={`${color}`}>{icon}</div>
+      <div>
+        <div className={`text-2xl font-bold ${color}`}>{value}</div>
+        <div className="text-gray-400 text-sm">{label}</div>
+      </div>
+    </div>
+  );
+}
+
 function ProjectsGrid({
   projects,
   userNamespace,
@@ -271,6 +333,8 @@ function ProjectCard({
       case "generating":
       case "pending":
       case "deploying":
+      case "analyzing":
+      case "planning":
         return "#f59e0b";
       case "failed":
         return "#ef4444";
@@ -288,7 +352,11 @@ function ProjectCard({
       case "deployed":
         return "Deployed";
       case "generating":
-        return "Building";
+        return "Generating";
+      case "analyzing":
+        return "AI Analyzing";
+      case "planning":
+        return "AI Planning";
       case "pending":
         return "Pending";
       case "deploying":
@@ -299,6 +367,24 @@ function ProjectCard({
         return "Ready to Deploy";
       default:
         return status;
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "completed":
+      case "deployed":
+      case "ready_to_deploy":
+        return <CheckCircleIcon className="w-4 h-4" />;
+      case "generating":
+      case "analyzing":
+      case "planning":
+      case "deploying":
+        return <ClockIcon className="w-4 h-4 animate-spin" />;
+      case "failed":
+        return <ExclamationCircleIcon className="w-4 h-4" />;
+      default:
+        return <ClockIcon className="w-4 h-4" />;
     }
   };
 
@@ -355,13 +441,44 @@ function ProjectCard({
 
         {/* Status Badge */}
         <div
-          className="px-3 py-1 rounded-full text-xs font-medium"
+          className="flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium"
           style={{
             backgroundColor: `${getStatusColor(project.status)}20`,
             color: getStatusColor(project.status),
           }}
         >
+          {getStatusIcon(project.status)}
           {getStatusText(project.status)}
+        </div>
+      </div>
+
+      {/* AI Workflow Progress */}
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <SparklesIcon className="w-3 h-3 text-purple-400" />
+          <span className="text-xs text-purple-400 font-medium">AI Workflow</span>
+        </div>
+        <div className="space-y-1">
+          <WorkflowStep
+            label="Analysis"
+            completed={!["initializing"].includes(project.status)}
+            active={project.status === "analyzing"}
+          />
+          <WorkflowStep
+            label="Planning"
+            completed={["ready_to_deploy", "deployed"].includes(project.status)}
+            active={project.status === "planning"}
+          />
+          <WorkflowStep
+            label="Generation"
+            completed={["ready_to_deploy", "deployed"].includes(project.status)}
+            active={project.status === "generating"}
+          />
+          <WorkflowStep
+            label="Deployment"
+            completed={project.status === "deployed"}
+            active={project.status === "deploying"}
+          />
         </div>
       </div>
 
@@ -395,6 +512,41 @@ function ProjectCard({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function WorkflowStep({
+  label,
+  completed,
+  active,
+}: {
+  label: string;
+  completed: boolean;
+  active: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <div
+        className={`w-2 h-2 rounded-full ${
+          completed
+            ? "bg-green-400"
+            : active
+            ? "bg-blue-400 animate-pulse"
+            : "bg-gray-600"
+        }`}
+      />
+      <span
+        className={`text-xs ${
+          completed
+            ? "text-green-400"
+            : active
+            ? "text-blue-400"
+            : "text-gray-500"
+        }`}
+      >
+        {label}
+      </span>
     </div>
   );
 }

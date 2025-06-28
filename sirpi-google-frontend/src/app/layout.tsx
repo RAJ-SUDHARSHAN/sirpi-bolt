@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ConditionalHeader } from "@/components/conditional-header";
+import { BoltBadgeFloating } from "@/components/ui/bolt-badge";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Sirpi - AI-Native DevOps Automation",
-  description: "Automated DevOps infrastructure for your projects",
+  description: "Transform any GitHub repository into production-ready infrastructure with AI-powered analysis and deployment automation.",
 };
 
 export default function RootLayout({
@@ -35,6 +36,7 @@ export default function RootLayout({
           <ThemeProvider>
             <ConditionalHeader />
             <main className="relative">{children}</main>
+            <BoltBadgeFloating />
           </ThemeProvider>
         </body>
       </html>
