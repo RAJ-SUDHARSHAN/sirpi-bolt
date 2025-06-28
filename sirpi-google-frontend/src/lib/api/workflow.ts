@@ -12,9 +12,9 @@ declare global {
   }
 }
 
-// Helper function to get auth headers
+// Helper function to get auth headers (client-side only)
 const getAuthHeaders = async () => {
-  // For client-side usage
+  // Only for client-side usage
   if (typeof window !== "undefined") {
     const token = await window.Clerk?.session?.getToken();
     return {
@@ -23,20 +23,10 @@ const getAuthHeaders = async () => {
     };
   }
 
-  // For server-side usage
-  try {
-    const { auth } = await import("@clerk/nextjs/server");
-    const { getToken } = await auth();
-    const token = await getToken();
-    return {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-    };
-  } catch {
-    return {
-      "Content-Type": "application/json",
-    };
-  }
+  // Return default headers for server-side rendering
+  return {
+    "Content-Type": "application/json",
+  };
 };
 
 // Types for workflow API
